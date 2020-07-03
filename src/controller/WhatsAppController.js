@@ -90,7 +90,7 @@ class WhatsAppController {
         });
     }
 
-    // Initialize events
+    // Initialize document events
     initEvents() {
 
         // Profile region
@@ -137,9 +137,91 @@ class WhatsAppController {
         this.el.formPanelAddContact.on('submit', e => {
             e.preventDefault();
             let formData = new FormData(this.el.formPanelAddContact);
-
         });
 
+        // Contacts region
+        this.el.contactsMessagesList.querySelectorAll('.contact-item').forEach(contact => {
+            contact.on('click', e => {
+                this.el.home.hide();
+                this.el.main.css({
+                    display: 'flex'
+                });
+            });
+        });
+
+        // Attach region
+        this.el.btnAttach.on('click', e => {
+            e.stopPropagation(); // To ensure the non propagation of the event
+            this.el.menuAttach.addClass('open');
+            document.addEventListener('click', this.hideAttachMenu.bind(this)); // Binding the scope
+        });
+
+        this.el.btnAttachPhoto.on('click', e => {
+            this.el.inputPhoto.click();
+        });
+
+        this.el.inputPhoto.on('change', e => {
+            console.log(this.el.inputPhoto.files);
+            [...this.el.inputPhoto.files].forEach(file => { // Using spread to convert the collection to an array
+                console.log(file);
+            });
+        });
+
+        this.el.btnAttachCamera.on('click', e => {
+            this.closeAllMainPanels();
+            this.el.panelCamera.addClass('open');
+            this.el.panelCamera.css({
+                height: '100%'
+            });
+        });
+
+        this.el.btnTakePicture.on('click', e => {
+            console.log('Soon taking pictures!');
+        });
+
+        this.el.btnClosePanelCamera.on('click', e => {
+            this.closeAllMainPanels();
+            this.el.panelMessagesContainer.show();
+        });
+
+        this.el.btnAttachDocument.on('click', e => {
+            this.closeAllMainPanels();
+            this.el.panelDocumentPreview.addClass('open');
+            this.el.panelDocumentPreview.css({
+                height: '100%'
+            });
+        });
+
+        this.el.btnSendDocument.on('click', e=>{
+            console.log('Sending doc soon!');
+        });
+
+        this.el.btnClosePanelDocumentPreview.on('click', e=>{
+            this.closeAllMainPanels();
+            this.el.panelMessagesContainer.show();
+        });
+
+        this.el.btnAttachContact.on('click', e => {
+            this.el.modalContacts.show();
+        });
+
+        this.el.btnCloseModalContacts.on('click', e=>{
+            this.el.modalContacts.hide();
+        });
+        
+    }
+
+    // Hide the attachment menu after a click
+    hideAttachMenu() {
+        document.removeEventListener('click', this.hideAttachMenu);
+        this.el.menuAttach.removeClass('open');
+    }
+
+    // Hide main panels to ensure visibility of others
+    closeAllMainPanels(){
+        this.el.panelMessagesContainer.hide();
+        this.el.panelDocumentPreview.removeClass('open');
+        this.el.panelCamera.removeClass('open');
     }
 
     // Hide left panels to ensure visibility of others
