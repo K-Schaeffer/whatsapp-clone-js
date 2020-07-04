@@ -192,11 +192,11 @@ class WhatsAppController {
             });
         });
 
-        this.el.btnSendDocument.on('click', e=>{
+        this.el.btnSendDocument.on('click', e => {
             console.log('Sending doc soon!');
         });
 
-        this.el.btnClosePanelDocumentPreview.on('click', e=>{
+        this.el.btnClosePanelDocumentPreview.on('click', e => {
             this.closeAllMainPanels();
             this.el.panelMessagesContainer.show();
         });
@@ -205,10 +205,43 @@ class WhatsAppController {
             this.el.modalContacts.show();
         });
 
-        this.el.btnCloseModalContacts.on('click', e=>{
+        this.el.btnCloseModalContacts.on('click', e => {
             this.el.modalContacts.hide();
         });
-        
+
+        // Microphone region
+        this.el.btnSendMicrophone.on('click', e => {
+            this.el.recordMicrophone.show();
+            this.el.btnSendMicrophone.hide();
+            this.startRecordMicrophoneTimer();
+        });
+
+        this.el.btnFinishMicrophone.on('click', e => {
+            this.el.btnSendMicrophone.hide();
+            this.closeRecordMicrophone();
+        });
+
+        this.el.btnCancelMicrophone.on('click', e => {
+            this.el.btnSendMicrophone.hide();
+            this.closeRecordMicrophone();
+        });
+
+
+    }
+
+    // Start and update the recording timer
+    startRecordMicrophoneTimer() {
+        let start = Date.now();
+        this._recordMicrophoneInterval = setInterval(() => {
+            this.el.recordMicrophoneTimer.innerHTML = Format.toTime((Date.now() - start));
+        }, 100);
+    }
+
+    // Hide the microphone icon when is recording an audio
+    closeRecordMicrophone() {
+        this.el.recordMicrophone.hide();
+        this.el.btnSendMicrophone.show();
+        clearInterval(this._recordMicrophoneInterval);
     }
 
     // Hide the attachment menu after a click
@@ -218,7 +251,7 @@ class WhatsAppController {
     }
 
     // Hide main panels to ensure visibility of others
-    closeAllMainPanels(){
+    closeAllMainPanels() {
         this.el.panelMessagesContainer.hide();
         this.el.panelDocumentPreview.removeClass('open');
         this.el.panelCamera.removeClass('open');
